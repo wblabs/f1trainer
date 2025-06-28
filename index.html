@@ -399,7 +399,7 @@
           }
 
           if (!currentQuestion) {
-            return <div className="min-h-screen flex items-center justify-center">Загрузка...</div>;
+            return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
           }
 
           // Если квиз завершён
@@ -424,10 +424,20 @@
             <div className="min-h-screen" style={{ background: '#1B1C25' }}>
               <div className="max-w-2xl mx-auto">
                 {/* Заголовок */}
-                <div className="text-center mb-4">
-                  <h1 className="text-2xl font-semibold text-white mb-1 flex items-center justify-center gap-2">🏎️ F1 Fan Trainer
-                  </h1>
-                  <p className="text-xs text-gray-400 mt-0 mb-0 hidden sm:block">Ultimate Formula 1 Knowledge Quiz 2025</p>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-2xl font-semibold text-white mb-0 flex items-center gap-2">🏎️ F1 Fan Trainer</h1>
+                  </div>
+                  <button
+                    onClick={resetQuiz}
+                    className="flex items-center gap-1 border border-gray-400 text-gray-200 hover:border-blue-400 hover:text-blue-400 rounded-lg px-3 py-1.5 bg-transparent transition-colors ml-4"
+                    title="Reset quiz"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5A9 9 0 1 0 6.75 5.25M4.5 4.5v5.25h5.25" />
+                    </svg>
+                    <span className="hidden sm:inline">Reset</span>
+                  </button>
                 </div>
 
                 {/* Счет и категории */}
@@ -436,12 +446,6 @@
                     <div className="text-lg font-semibold text-white">
                       Score: <span className={getScoreColor()}>{score}/{maxQuestions}</span>
                     </div>
-                    <button 
-                      onClick={resetQuiz}
-                      className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
-                    >
-                      Reset
-                    </button>
                   </div>
                   {/* Прогресс-бар по вопросам */}
                   <div className="w-full mt-3">
@@ -474,13 +478,6 @@
                     }
                     return <TeamDriverBanner driverName={driverName} teamName={teamName} />;
                   })()}
-
-                  {/* Категория вопроса */}
-                  <div className="text-center mb-4">
-                    <span className="px-3 py-1 rounded-full text-sm font-medium" style={{ background: '#303038', color: '#fff' }}>
-                      {currentQuestion.category}
-                    </span>
-                  </div>
 
                   {/* Изображение трассы (если есть) */}
                   {currentQuestion.image && (
@@ -533,7 +530,7 @@
                   {/* Варианты ответов */}
                   <div className="space-y-3">
                     {currentQuestion.options.map((option, index) => {
-                      let buttonClass = "w-full p-4 text-left rounded-lg border-2 transition-all duration-200 text-white ";
+                      let buttonClass = "w-full p-2 text-base text-left rounded-lg border-2 transition-all duration-200 text-white ";
                       
                       if (!showResult) {
                         buttonClass += "border-gray-600 hover:border-blue-400 hover:bg-gray-700 cursor-pointer";
@@ -554,7 +551,7 @@
                         content = (
                           <span className="inline-flex items-center gap-2 font-semibold">
                             <DriverAvatar name={driverName} />
-                            {renderTeamWithLogo(String.fromCharCode(65 + index) + '.', option)}
+                            {renderTeamWithLogo('', option)}
                           </span>
                         );
                       } else if (currentQuestion.type === 'driver_number') {
@@ -563,13 +560,13 @@
                         content = (
                           <span className="inline-flex items-center gap-2 font-semibold">
                             <DriverAvatar name={driverName} />
-                            <span>{String.fromCharCode(65 + index)}. {option}</span>
+                            <span>{option}</span>
                           </span>
                         );
                       } else {
                         content = (
                           <div className="font-semibold text-white">
-                            {String.fromCharCode(65 + index)}. {option}
+                            {option}
                           </div>
                         );
                       }
