@@ -148,10 +148,10 @@
                   type: 'track_image',
                   question: 'Which track is this?',
                   image: trackImages[track.name],
-                  correct: `${track.name} (${track.country.replace(/🇦🇺|🇨🇳|🇯🇵|🇧🇭|🇸🇦|🇺🇸|🇮🇹|🇲🇨|🇪🇸|🇨🇦|🇦🇹|🇬🇧|🇭🇺|🇧🇪|🇳🇱|🇦🇿|🇸🇬|🇲🇽|🇧🇷|🇶🇦|🇦🇪/, '')})`,
+                  correct: `${track.name} (${track.country})`,
                   options: shuffleArray([
-                    `${track.name} (${track.country.replace(/🇦🇺|🇨🇳|🇯🇵|🇧🇭|🇸🇦|🇺🇸|🇮🇹|🇲🇨|🇪🇸|🇨🇦|🇦🇹|🇬🇧|🇭🇺|🇧🇪|🇳🇱|🇦🇿|🇸🇬|🇲🇽|🇧🇷|🇶🇦|🇦🇪/, '')})`,
-                    ...otherTracks.map(t => `${t.name} (${t.country.replace(/🇦🇺|🇨🇳|🇯🇵|🇧🇭|🇸🇦|🇺🇸|🇮🇹|🇲🇨|🇪🇸|🇨🇦|🇦🇹|🇬🇧|🇭🇺|🇧🇪|🇳🇱|🇦🇿|🇸🇬|🇲🇽|🇧🇷|🇶🇦|🇦🇪/, '')})`)
+                    `${track.name} (${track.country})`,
+                    ...otherTracks.map(t => `${t.name} (${t.country})`)
                   ]),
                   category: '🏁 Tracks'
                 };
@@ -195,7 +195,7 @@
                   .slice(0, 3);
                 return {
                   type: 'track_laps',
-                  question: `How many laps in the race at ${lapTrack.name} (${lapTrack.country.replace(/🇦🇺|🇨🇳|🇯🇵|🇧🇭|🇸🇦|🇺🇸|🇮🇹|🇲🇨|🇪🇸|🇨🇦|🇦🇹|🇬🇧|🇭🇺|🇧🇪|🇳🇱|🇦🇿|🇸🇬|🇲🇽|🇧🇷|🇶🇦|🇦🇪/, '')})?`,
+                  question: `How many laps in the race at ${lapTrack.name} (${lapTrack.country})?`,
                   image: trackImages[lapTrack.name],
                   correct: lapTrack.laps.toString(),
                   options: shuffleArray([lapTrack.laps.toString(), ...otherLaps.map(t => t.laps.toString())]),
