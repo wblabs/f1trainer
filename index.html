@@ -32,6 +32,7 @@
           const [questionIndex, setQuestionIndex] = useState(1);
           const maxQuestions = 20;
           const [usedQuestions, setUsedQuestions] = useState([]);
+          const [shuffledQuestionTypes, setShuffledQuestionTypes] = useState([]);
 
           // Исправленные URL изображений трасс
           const trackImages = {
@@ -233,14 +234,30 @@
             }
           };
 
+          // Генерация массива чередующихся типов вопросов
+          function generateShuffledTypes() {
+            const types = questionTypes.map(q => q.type);
+            const result = [];
+            let prev = null;
+            for (let i = 0; i < maxQuestions; i++) {
+              // Исключаем повтор предыдущего типа
+              const available = types.filter(t => t !== prev);
+              const type = available[Math.floor(Math.random() * available.length)];
+              result.push(type);
+              prev = type;
+            }
+            return result;
+          }
+
           // Генерация нового вопроса
           const generateNewQuestion = () => {
             setImageError(false);
             setImageLoading(false);
             let tries = 0;
             let newQuestion, key;
+            // Берём тип вопроса из заранее перемешанного массива
+            const questionType = shuffledQuestionTypes[questionIndex - 1] || getRandomQuestionType();
             do {
-              const questionType = getRandomQuestionType();
               newQuestion = generateQuestionByType(questionType);
               key = getQuestionKey(newQuestion);
               tries++;
@@ -274,13 +291,19 @@
             setScore(0);
             setQuestionIndex(1);
             setUsedQuestions([]);
+            setShuffledQuestionTypes(generateShuffledTypes());
             generateNewQuestion();
           };
 
           // Инициализация при загрузке
           useEffect(() => {
-            generateNewQuestion();
+            setShuffledQuestionTypes(generateShuffledTypes());
           }, []);
+          useEffect(() => {
+            if (shuffledQuestionTypes.length > 0) {
+              generateNewQuestion();
+            }
+          }, [shuffledQuestionTypes]);
 
           // Цвет счета в зависимости от процента правильных ответов
           const getScoreColor = () => {
@@ -547,20 +570,10 @@
 
                       let content;
                       if (currentQuestion.type === 'driver_team') {
-                        // Найти имя пилота из вопроса
-                        const driverName = currentQuestion.question.match(/does (.+) race for\?/)[1];
-                        content = (
-                          <span className="inline-flex items-center gap-2 font-semibold">
-                            <DriverAvatar name={driverName} />
-                            {renderTeamWithLogo('', option)}
-                          </span>
-                        );
+                        content = renderTeamWithLogo('', option);
                       } else if (currentQuestion.type === 'driver_number') {
-                        // Найти имя пилота из вопроса
-                        const driverName = currentQuestion.question.match(/number of (.+)\?/)[1];
                         content = (
                           <span className="inline-flex items-center gap-2 font-semibold">
-                            <DriverAvatar name={driverName} />
                             <span>{option}</span>
                           </span>
                         );
@@ -597,14 +610,12 @@
                               {currentQuestion.type === 'driver_team'
                                 ? (
                                     <span className="inline-flex items-center gap-2 font-semibold">
-                                      <DriverAvatar name={currentQuestion.question.match(/does (.+) race for\?/)[1]} />
                                       {renderTeamWithLogo('', currentQuestion.correct)}
                                     </span>
                                   )
                                 : currentQuestion.type === 'driver_number'
                                   ? (
                                       <span className="inline-flex items-center gap-2 font-semibold">
-                                        <DriverAvatar name={currentQuestion.question.match(/number of (.+)\?/)[1]} />
                                         {currentQuestion.correct}
                                       </span>
                                     )
