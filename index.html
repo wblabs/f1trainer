@@ -298,6 +298,21 @@
           // Инициализация при загрузке
           useEffect(() => {
             setShuffledQuestionTypes(generateShuffledTypes());
+            // Preload all driver images
+            Object.values(driverImages).forEach(src => {
+              const img = new window.Image();
+              img.src = src;
+            });
+            // Preload all track images
+            Object.values(trackImages).forEach(src => {
+              const img = new window.Image();
+              img.src = src;
+            });
+            // Preload all team logos
+            Object.values(teamLogos).forEach(src => {
+              const img = new window.Image();
+              img.src = src;
+            });
           }, []);
           useEffect(() => {
             if (shuffledQuestionTypes.length > 0) {
