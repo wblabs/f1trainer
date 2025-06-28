@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 Fan Trainer - Ultimate F1 Quiz 2025</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const F1Quiz = () => {
+          const [currentQuestion, setCurrentQuestion] = useState(null);
+          const [selectedAnswer, setSelectedAnswer] = useState('');
+          const [showResult, setShowResult] = useState(false);
+          const [score, setScore] = useState(0);
+          const [imageError, setImageError] = useState(false);
+          const [imageLoading, setImageLoading] = useState(false);
+          const [questionIndex, setQuestionIndex] = useState(1);
+          const maxQuestions = 20;
+          const [usedQuestions, setUsedQuestions] = useState([]);
+
+          // Исправленные URL изображений трасс
+          const trackImages = {
+            'Yas Marina Circuit': 'https://wblabs.com/f1/f1tracks/2025/Abu-Dhabi-Yas-Marina-Circuit.png',
+            'Albert Park Circuit': 'https://wblabs.com/f1/f1tracks/2025/Australia-Melbourne-Grand-Prix-Circuit.png',
+            'Red Bull Ring': 'https://wblabs.com/f1/f1tracks/2025/Austria-Red-Bull-Ring.png',
+            'Baku City Circuit': 'https://wblabs.com/f1/f1tracks/2025/Azerbaijan-Baku-City-Circuit.png',
+            'Bahrain International Circuit': 'https://wblabs.com/f1/f1tracks/2025/Bahrain-Bahrain-International-Circuit.png',
+            'Circuit de Spa-Francorchamps': 'https://wblabs.com/f1/f1tracks/2025/Belgium-Circuit-de-Spa-Francorchamps.png',
+            'Autódromo José Carlos Pace': 'https://wblabs.com/f1/f1tracks/2025/Brazil-Autodromo-Jose-Carlos-Pace.png',
+            'Circuit Gilles Villeneuve': 'https://wblabs.com/f1/f1tracks/2025/Canada-Circuit-Gilles-Villeneuve.png',
+            'Shanghai International Circuit': 'https://wblabs.com/f1/f1tracks/2025/China-Shanghai-International-Circuit.png',
+            'Silverstone Circuit': 'https://wblabs.com/f1/f1tracks/2025/Great-Britain-Silverstone-Circuit.png',
+            'Hungaroring': 'https://wblabs.com/f1/f1tracks/2025/Hungary-Hungaroring.png',
+            'Autodromo Enzo e Dino Ferrari': 'https://wblabs.com/f1/f1tracks/2025/Italy-Imola-Autodromo-Enzo-e-Dino-Ferrari.png',
+            'Autodromo Nazionale di Monza': 'https://wblabs.com/f1/f1tracks/2025/Italy-Monza-Autodromo-Nazionale-Monza.png',
+            'Suzuka International Racing Course': 'https://wblabs.com/f1/f1tracks/2025/Japan-Suzuka-International-Racing-Course.png',
+            'Autódromo Hermanos Rodríguez': 'https://wblabs.com/f1/f1tracks/2025/Mexico-Autodromo-Hermanos-Rodriguez.png',
+            'Circuit de Monaco': 'https://wblabs.com/f1/f1tracks/2025/Monaco-Circuit-de-Monaco.png',
+            'Circuit Zandvoort': 'https://wblabs.com/f1/f1tracks/2025/Netherlands-Zandvoort-Circuit.png',
+            'Lusail International Circuit': 'https://wblabs.com/f1/f1tracks/2025/Qatar-Lusail-International-Circuit.png',
+            'Jeddah Corniche Circuit': 'https://wblabs.com/f1/f1tracks/2025/Saudi-Arabia-Jeddah-Street-Circuit.png',
+            'Marina Bay Street Circuit': 'https://wblabs.com/f1/f1tracks/2025/Singapore-Marina-Bay-Street-Circuit.png',
+            'Circuit de Barcelona-Catalunya': 'https://wblabs.com/f1/f1tracks/2025/Spain-Circuit-de-Barcelona-Catalunya.png',
+            'Circuit of the Americas': 'https://wblabs.com/f1/f1tracks/2025/United-States-Austin-Circuit-of-The-Americas.png',
+            'Miami International Autodrome': 'https://wblabs.com/f1/f1tracks/2025/United-States-Miami-Miami-International-Autodrome.png',
+            'Las Vegas Strip Circuit': 'https://wblabs.com/f1/f1tracks/2025/United-States-Las-Vegas-Las-Vegas.png'
+          };
+
+          // Полная база данных F1 2025
+          const f1Data = {
+            // Трассы с количеством кругов
+            tracks: [
+              { name: 'Albert Park Circuit', country: '🇦🇺 Australia', city: 'Melbourne', laps: 58 },
+              { name: 'Shanghai International Circuit', country: '🇨🇳 China', city: 'Shanghai', laps: 56 },
+              { name: 'Suzuka International Racing Course', country: '🇯🇵 Japan', city: 'Suzuka', laps: 53 },
+              { name: 'Bahrain International Circuit', country: '🇧🇭 Bahrain', city: 'Sakhir', laps: 57 },
+              { name: 'Jeddah Corniche Circuit', country: '🇸🇦 Saudi Arabia', city: 'Jeddah', laps: 50 },
+              { name: 'Miami International Autodrome', country: '🇺🇸 USA', city: 'Miami', laps: 57 },
+              { name: 'Autodromo Enzo e Dino Ferrari', country: '🇮🇹 Italy', city: 'Imola', laps: 63 },
+              { name: 'Circuit de Monaco', country: '🇲🇨 Monaco', city: 'Monte Carlo', laps: 78 },
+              { name: 'Circuit de Barcelona-Catalunya', country: '🇪🇸 Spain', city: 'Barcelona', laps: 66 },
+              { name: 'Circuit Gilles Villeneuve', country: '🇨🇦 Canada', city: 'Montreal', laps: 70 },
+              { name: 'Red Bull Ring', country: '🇦🇹 Austria', city: 'Spielberg', laps: 71 },
+              { name: 'Silverstone Circuit', country: '🇬🇧 UK', city: 'Silverstone', laps: 52 },
+              { name: 'Hungaroring', country: '🇭🇺 Hungary', city: 'Budapest', laps: 70 },
+              { name: 'Circuit de Spa-Francorchamps', country: '🇧🇪 Belgium', city: 'Spa', laps: 44 },
+              { name: 'Circuit Zandvoort', country: '🇳🇱 Netherlands', city: 'Zandvoort', laps: 72 },
+              { name: 'Autodromo Nazionale di Monza', country: '🇮🇹 Italy', city: 'Monza', laps: 53 },
+              { name: 'Baku City Circuit', country: '🇦🇿 Azerbaijan', city: 'Baku', laps: 51 },
+              { name: 'Marina Bay Street Circuit', country: '🇸🇬 Singapore', city: 'Singapore', laps: 62 },
+              { name: 'Circuit of the Americas', country: '🇺🇸 USA', city: 'Austin', laps: 56 },
+              { name: 'Autódromo Hermanos Rodríguez', country: '🇲🇽 Mexico', city: 'Mexico City', laps: 71 },
+              { name: 'Autódromo José Carlos Pace', country: '🇧🇷 Brazil', city: 'Sao Paulo', laps: 71 },
+              { name: 'Las Vegas Strip Circuit', country: '🇺🇸 USA', city: 'Las Vegas', laps: 50 },
+              { name: 'Lusail International Circuit', country: '🇶🇦 Qatar', city: 'Lusail', laps: 57 },
+              { name: 'Yas Marina Circuit', country: '🇦🇪 UAE', city: 'Abu Dhabi', laps: 58 }
+            ],
+
+            // Пилоты 2025 с актуальными данными
+            drivers: [
+              { name: 'Max Verstappen', number: 1, team: '🏆 Red Bull Racing', nationality: '🇳🇱 Netherlands' },
+              { name: 'Yuki Tsunoda', number: 22, team: '🏆 Red Bull Racing', nationality: '🇯🇵 Japan' },
+              { name: 'Lewis Hamilton', number: 44, team: '🐎 Ferrari', nationality: '🇬🇧 UK' },
+              { name: 'Charles Leclerc', number: 16, team: '🐎 Ferrari', nationality: '🇲🇨 Monaco' },
+              { name: 'Lando Norris', number: 4, team: '🧡 McLaren', nationality: '🇬🇧 UK' },
+              { name: 'Oscar Piastri', number: 81, team: '🧡 McLaren', nationality: '🇦🇺 Australia' },
+              { name: 'George Russell', number: 63, team: '⭐ Mercedes', nationality: '🇬🇧 UK' },
+              { name: 'Andrea Kimi Antonelli', number: 12, team: '⭐ Mercedes', nationality: '🇮🇹 Italy' },
+              { name: 'Fernando Alonso', number: 14, team: '💚 Aston Martin', nationality: '🇪🇸 Spain' },
+              { name: 'Lance Stroll', number: 18, team: '💚 Aston Martin', nationality: '🇨🇦 Canada' },
+              { name: 'Pierre Gasly', number: 10, team: '🔵 Alpine', nationality: '🇫🇷 France' },
+              { name: 'Franco Colapinto', number: 43, team: '🔵 Alpine', nationality: '🇦🇷 Argentina' },
+              { name: 'Liam Lawson', number: 30, team: '🐂 Racing Bulls', nationality: '🇳🇿 New Zealand' },
+              { name: 'Isack Hadjar', number: 61, team: '🐂 Racing Bulls', nationality: '🇫🇷 France' },
+              { name: 'Esteban Ocon', number: 31, team: '🏎 Haas', nationality: '🇫🇷 France' },
+              { name: 'Oliver Bearman', number: 50, team: '🔴 Haas', nationality: '🇬🇧 UK' },
+              { name: 'Alexander Albon', number: 23, team: '💙 Williams', nationality: '🇹🇭 Thailand' },
+              { name: 'Carlos Sainz Jr.', number: 55, team: '💙 Williams', nationality: '🇪🇸 Spain' },
+              { name: 'Nico Hulkenberg', number: 27, team: '🟢 Kick Sauber', nationality: '🇩🇪 Germany' },
+              { name: 'Gabriel Bortoleto', number: 5, team: '🟢 Kick Sauber', nationality: '🇧🇷 Brazil' }
+            ]
+          };
+
+          // Типы вопросов
+          const questionTypes = [
+            { type: 'track_image', title: '🏁 Какая это трасса?', titleEn: '🏁 Which track is this?', weight: 3 },
+            { type: 'driver_team', title: '👨‍💼 За какую команду выступает пилот?', titleEn: '👨‍💼 Which team does this driver race for?', weight: 2 },
+            { type: 'driver_number', title: '🔢 Какой номер у пилота?', titleEn: '🔢 What is the driver\'s number?', weight: 2 },
+            { type: 'track_laps', title: '🔄 Сколько кругов на трассе?', titleEn: '🔄 How many laps on this track?', weight: 2 }
+          ];
+
+          // Перемешивание массива
+          const shuffleArray = (array) => {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+          };
+
+          // Генерация вопроса по типу
+          const generateQuestionByType = (type) => {
+            switch (type) {
+              case 'track_image':
+                const track = f1Data.tracks[Math.floor(Math.random() * f1Data.tracks.length)];
+                const otherTracks = f1Data.tracks
+                  .filter(t => t.name !== track.name)
+                  .sort(() => 0.5 - Math.random())
+                  .slice(0, 3);
+                return {
+                  type: 'track_image',
+                  question: 'Which track is this?',
+                  image: trackImages[track.name],
+                  correct: `${track.name} (${track.country.replace(/🇦🇺|🇨🇳|🇯🇵|🇧🇭|🇸🇦|🇺🇸|🇮🇹|🇲🇨|🇪🇸|🇨🇦|🇦🇹|🇬🇧|🇭🇺|🇧🇪|🇳🇱|🇦🇿|🇸🇬|🇲🇽|🇧🇷|🇶🇦|🇦🇪/, '')})`,
+                  options: shuffleArray([
+                    `${track.name} (${track.country.replace(/🇦🇺|🇨🇳|🇯🇵|🇧🇭|🇸🇦|🇺🇸|🇮🇹|🇲🇨|🇪🇸|🇨🇦|🇦🇹|🇬🇧|🇭🇺|🇧🇪|🇳🇱|🇦🇿|🇸🇬|🇲🇽|🇧🇷|🇶🇦|🇦🇪/, '')})`,
+                    ...otherTracks.map(t => `${t.name} (${t.country.replace(/🇦🇺|🇨🇳|🇯🇵|🇧🇭|🇸🇦|🇺🇸|🇮🇹|🇲🇨|🇪🇸|🇨🇦|🇦🇹|🇬🇧|🇭🇺|🇧🇪|🇳🇱|🇦🇿|🇸🇬|🇲🇽|🇧🇷|🇶🇦|🇦🇪/, '')})`)
+                  ]),
+                  category: '🏁 Tracks'
+                };
+
+              case 'driver_team':
+                const driver = f1Data.drivers[Math.floor(Math.random() * f1Data.drivers.length)];
+                const otherTeams = f1Data.drivers
+                  .filter(d => d.team !== driver.team)
+                  .sort(() => 0.5 - Math.random())
+                  .slice(0, 3);
+                return {
+                  type: 'driver_team',
+                  question: `Which team does ${driver.name} race for?`,
+                  correct: getTeamName(driver.team),
+                  options: shuffleArray([
+                    getTeamName(driver.team),
+                    ...otherTeams.map(d => getTeamName(d.team))
+                  ]),
+                  category: '👨‍💼 Drivers'
+                };
+
+              case 'driver_number':
+                const numDriver = f1Data.drivers[Math.floor(Math.random() * f1Data.drivers.length)];
+                const otherNumbers = f1Data.drivers
+                  .filter(d => d.number !== numDriver.number)
+                  .sort(() => 0.5 - Math.random())
+                  .slice(0, 3);
+                return {
+                  type: 'driver_number',
+                  question: `What is the number of ${numDriver.name}?`,
+                  correct: numDriver.number.toString(),
+                  options: shuffleArray([numDriver.number.toString(), ...otherNumbers.map(d => d.number.toString())]),
+                  category: '🔢 Numbers'
+                };
+
+              case 'track_laps':
+                const lapTrack = f1Data.tracks[Math.floor(Math.random() * f1Data.tracks.length)];
+                const otherLaps = f1Data.tracks
+                  .filter(t => t.laps !== lapTrack.laps)
+                  .sort(() => 0.5 - Math.random())
+                  .slice(0, 3);
+                return {
+                  type: 'track_laps',
+                  question: `How many laps in the race at ${lapTrack.name} (${lapTrack.country.replace(/🇦🇺|🇨🇳|🇯🇵|🇧🇭|🇸🇦|🇺🇸|🇮🇹|🇲🇨|🇪🇸|🇨🇦|🇦🇹|🇬🇧|🇭🇺|🇧🇪|🇳🇱|🇦🇿|🇸🇬|🇲🇽|🇧🇷|🇶🇦|🇦🇪/, '')})?`,
+                  image: trackImages[lapTrack.name],
+                  correct: lapTrack.laps.toString(),
+                  options: shuffleArray([lapTrack.laps.toString(), ...otherLaps.map(t => t.laps.toString())]),
+                  category: '🔄 Laps'
+                };
+
+              default:
+                return generateQuestionByType('track_image');
+            }
+          };
+
+          // Выбор случайного типа вопроса с учетом веса
+          const getRandomQuestionType = () => {
+            const weightedTypes = [];
+            questionTypes.forEach(type => {
+              for (let i = 0; i < type.weight; i++) {
+                weightedTypes.push(type.type);
+              }
+            });
+            return weightedTypes[Math.floor(Math.random() * weightedTypes.length)];
+          };
+
+          // Генерация уникального ключа для вопроса
+          const getQuestionKey = (q) => {
+            switch (q.type) {
+              case 'track_image':
+                return `track_image:${q.correct}`;
+              case 'driver_team':
+                return `driver_team:${q.question}`;
+              case 'driver_number':
+                return `driver_number:${q.question}`;
+              case 'track_laps':
+                return `track_laps:${q.question}`;
+              default:
+                return JSON.stringify(q);
+            }
+          };
+
+          // Генерация нового вопроса
+          const generateNewQuestion = () => {
+            setImageError(false);
+            setImageLoading(false);
+            let tries = 0;
+            let newQuestion, key;
+            do {
+              const questionType = getRandomQuestionType();
+              newQuestion = generateQuestionByType(questionType);
+              key = getQuestionKey(newQuestion);
+              tries++;
+            } while (usedQuestions.includes(key) && tries < 100);
+            setCurrentQuestion(newQuestion);
+            setSelectedAnswer('');
+            setShowResult(false);
+            setUsedQuestions(prev => [...prev, key]);
+            if (newQuestion.image) {
+              setImageLoading(true);
+            }
+          };
+
+          // Обработка ответа
+          const handleAnswer = (answer) => {
+            setSelectedAnswer(answer);
+            setShowResult(true);
+            if (answer === currentQuestion.correct) {
+              setScore(prev => prev + 1);
+            }
+          };
+
+          // Следующий вопрос
+          const handleNextQuestion = () => {
+            setQuestionIndex(prev => prev + 1);
+            generateNewQuestion();
+          };
+
+          // Сброс статистики
+          const resetQuiz = () => {
+            setScore(0);
+            setQuestionIndex(1);
+            setUsedQuestions([]);
+            generateNewQuestion();
+          };
+
+          // Инициализация при загрузке
+          useEffect(() => {
+            generateNewQuestion();
+          }, []);
+
+          // Цвет счета в зависимости от процента правильных ответов
+          const getScoreColor = () => {
+            const percentage = questionIndex > 1 ? (score / (questionIndex - 1)) * 100 : 0;
+            if (percentage >= 80) return 'text-green-400';
+            if (percentage >= 60) return 'text-yellow-400';
+            return 'text-red-400';
+          };
+
+          // Логотипы команд
+          const teamLogos = {
+            'Red Bull Racing': 'https://wblabs.com/f1/teams/2025/redbull.avif',
+            'Racing Bulls': 'https://wblabs.com/f1/teams/2025/racingbulls.avif',
+            'Ferrari': 'https://wblabs.com/f1/teams/2025/ferrari.avif',
+            'Mercedes': 'https://wblabs.com/f1/teams/2025/mercedes.avif',
+            'McLaren': 'https://wblabs.com/f1/teams/2025/mclaren.avif',
+            'Aston Martin': 'https://wblabs.com/f1/teams/2025/astonmartin.avif',
+            'Alpine': 'https://wblabs.com/f1/teams/2025/alpine.avif',
+            'Williams': 'https://wblabs.com/f1/teams/2025/williams.avif',
+            'Haas': 'https://wblabs.com/f1/teams/2025/haas.avif',
+            'Kick Sauber': 'https://wblabs.com/f1/teams/2025/kicksauber.avif',
+          };
+
+          // Цвета команд
+          const teamColors = {
+            'Red Bull Racing':   { dark: '#023382', light: '#3770C3', bg: '#013382' },
+            'Racing Bulls':     { dark: '#2446AB', light: '#5C84EB', bg: '#2445AB' },
+            'Ferrari':          { dark: '#720B06', light: '#D01E27', bg: '#710A06' },
+            'Mercedes':         { dark: '#007762', light: '#00C0A2', bg: '#017560' },
+            'McLaren':          { dark: '#873501', light: '#DB6601', bg: '#863402' },
+            'Aston Martin':     { dark: '#00482C', light: '#1A8762', bg: '#00482C' },
+            'Alpine':           { dark: '#015283', light: '#018DCE', bg: '#005081' },
+            'Williams':         { dark: '#011581', light: '#1154C6', bg: '#011481' },
+            'Haas':             { dark: '#4E5152', light: '#898D90', bg: '#4D5052' },
+            'Kick Sauber':      { dark: '#006402', light: '#00AC09', bg: '#006301' },
+          };
+
+          function TeamLogoCircle({ teamName }) {
+            const logo = teamLogos[teamName];
+            const color = teamColors[teamName] ? teamColors[teamName].bg : '#eee';
+            return (
+              <span style={{ background: color }} className="w-8 h-8 min-w-8 min-h-8 flex items-center justify-center rounded-full p-1">
+                {logo && <img src={logo} alt={teamName} className="w-6 h-6 object-contain" />}
+              </span>
+            );
+          }
+
+          function renderTeamWithLogo(label, teamStr) {
+            const teamName = getTeamName(teamStr);
+            return (
+              <span className="inline-flex items-center gap-2 font-semibold">
+                <TeamLogoCircle teamName={teamName} />
+                <span>{label} {teamStr}</span>
+              </span>
+            );
+          }
+
+          // Функция для получения "чистого" названия команды без эмодзи
+          const getTeamName = (teamStr) => {
+            // Удаляет первый emoji и пробелы в начале
+            return teamStr.replace(/^[^a-zA-Z0-9]+\s*/, '').trim();
+          };
+
+          // Фото пилотов
+          const driverImages = {
+            'Alexander Albon': 'https://wblabs.com/f1/drivers/2025/Alexander-Albon.avif',
+            'Fernando Alonso': 'https://wblabs.com/f1/drivers/2025/Fernando-Alonso.avif',
+            'Andrea Kimi Antonelli': 'https://wblabs.com/f1/drivers/2025/Andrea-Kimi-Antonelli.avif',
+            'Oliver Bearman': 'https://wblabs.com/f1/drivers/2025/Oliver-Bearman.avif',
+            'Gabriel Bortoleto': 'https://wblabs.com/f1/drivers/2025/Gabriel-Bortoleto.avif',
+            'Franco Colapinto': 'https://wblabs.com/f1/drivers/2025/Franco-Colapinto.avif',
+            'Pierre Gasly': 'https://wblabs.com/f1/drivers/2025/Pierre-Gasly.avif',
+            'Isack Hadjar': 'https://wblabs.com/f1/drivers/2025/Isack-Hadjar.avif',
+            'Lewis Hamilton': 'https://wblabs.com/f1/drivers/2025/Lewis-Hamilton.avif',
+            'Nico Hulkenberg': 'https://wblabs.com/f1/drivers/2025/Nico-Hulkenberg.avif',
+            'Liam Lawson': 'https://wblabs.com/f1/drivers/2025/Liam-Lawson.avif',
+            'Charles Leclerc': 'https://wblabs.com/f1/drivers/2025/Charles-Leclerc.avif',
+            'Lando Norris': 'https://wblabs.com/f1/drivers/2025/Lando-Norris.avif',
+            'Esteban Ocon': 'https://wblabs.com/f1/drivers/2025/Esteban-Ocon.avif',
+            'Oscar Piastri': 'https://wblabs.com/f1/drivers/2025/Oscar-Piastri.avif',
+            'George Russell': 'https://wblabs.com/f1/drivers/2025/George-Russell.avif',
+            'Carlos Sainz Jr.': 'https://wblabs.com/f1/drivers/2025/Carlos-Sainz-Jr.avif',
+            'Lance Stroll': 'https://wblabs.com/f1/drivers/2025/Lance-Stroll.avif',
+            'Yuki Tsunoda': 'https://wblabs.com/f1/drivers/2025/Yuki-Tsunoda.avif',
+          };
+
+          function DriverAvatar({ name }) {
+            const img = driverImages[name];
+            if (!img) return null;
+            return (
+              <span className="w-8 h-8 min-w-8 min-h-8 flex items-center justify-center rounded-full overflow-hidden bg-gray-100">
+                <img src={img} alt={name} className="w-8 h-8 object-cover object-top" />
+              </span>
+            );
+          }
+
+          // Баннер пилота с фоном команды
+          function TeamDriverBanner({ driverName, teamName }) {
+            const img = driverImages[driverName];
+            const colors = teamColors[teamName] || { dark: '#222', light: '#aaa' };
+            return (
+              <div
+                className="w-full rounded-lg mb-4 overflow-hidden flex justify-center items-center"
+                style={{ height: '129px', background: `linear-gradient(to right, ${colors.dark}, ${colors.light})` }}
+              >
+                {img && (
+                  <img
+                    src={img}
+                    alt={driverName}
+                    className="object-cover object-top shadow-lg"
+                    style={{ height: '120px', width: '120px' }}
+                  />
+                )}
+              </div>
+            );
+          }
+
+          if (!currentQuestion) {
+            return <div className="min-h-screen flex items-center justify-center">Загрузка...</div>;
+          }
+
+          // Если квиз завершён
+          if (questionIndex > maxQuestions) {
+            return (
+              <div className="min-h-screen flex items-center justify-center" style={{ background: '#1B1C25' }}>
+                <div className="rounded-lg shadow-lg p-8 max-w-md w-full text-center text-white" style={{ background: '#15161E' }}>
+                  <h2 className="text-2xl font-bold mb-4">Quiz finished!</h2>
+                  <p className="text-lg mb-2">Your result: <span className={getScoreColor()}>{score} out of {maxQuestions}</span></p>
+                  <button 
+                    onClick={resetQuiz}
+                    className="mt-6 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                  >
+                    Start again
+                  </button>
+                </div>
+              </div>
+            );
+          }
+
+          return (
+            <div className="min-h-screen" style={{ background: '#1B1C25' }}>
+              <div className="max-w-2xl mx-auto">
+                {/* Заголовок */}
+                <div className="text-center mb-4">
+                  <h1 className="text-2xl font-semibold text-white mb-1 flex items-center justify-center gap-2">🏎️ F1 Fan Trainer
+                  </h1>
+                  <p className="text-xs text-gray-400 mt-0 mb-0 hidden sm:block">Ultimate Formula 1 Knowledge Quiz 2025</p>
+                </div>
+
+                {/* Счет и категории */}
+                <div className="rounded-lg shadow-md p-4 mb-2 text-white" style={{ background: '#15161E' }}>
+                  <div className="flex justify-between items-center">
+                    <div className="text-lg font-semibold text-white">
+                      Score: <span className={getScoreColor()}>{score}/{maxQuestions}</span>
+                    </div>
+                    <button 
+                      onClick={resetQuiz}
+                      className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                    >
+                      Reset
+                    </button>
+                  </div>
+                  {/* Прогресс-бар по вопросам */}
+                  <div className="w-full mt-3">
+                    <div className="h-2" style={{ background: '#303038', borderRadius: '9999px', overflow: 'hidden' }}>
+                      <div
+                        className="h-2 transition-all duration-300"
+                        style={{ width: `${Math.min((questionIndex - 1) / maxQuestions * 100, 100)}%`, background: '#3770C3', borderRadius: '9999px' }}
+                      ></div>
+                    </div>
+                    <div className="text-xs text-gray-400 text-right mt-1">{Math.min(questionIndex, maxQuestions)}/{maxQuestions}</div>
+                  </div>
+                </div>
+
+                {/* Основная карточка квиза */}
+                <div className="rounded-lg shadow-lg p-6 mb-6 text-white" style={{ background: '#15161E' }}>
+                  {/* Баннер пилота и команды */}
+                  {(currentQuestion.type === 'driver_team' || currentQuestion.type === 'driver_number') && (() => {
+                    // Имя пилота
+                    let driverName = '';
+                    let teamName = '';
+                    if (currentQuestion.type === 'driver_team') {
+                      driverName = currentQuestion.question.match(/does (.+) race for\?/)[1];
+                      // Найти команду по имени пилота
+                      const driver = f1Data.drivers.find(d => d.name === driverName);
+                      teamName = driver ? getTeamName(driver.team) : '';
+                    } else if (currentQuestion.type === 'driver_number') {
+                      driverName = currentQuestion.question.match(/number of (.+)\?/)[1];
+                      const driver = f1Data.drivers.find(d => d.name === driverName);
+                      teamName = driver ? getTeamName(driver.team) : '';
+                    }
+                    return <TeamDriverBanner driverName={driverName} teamName={teamName} />;
+                  })()}
+
+                  {/* Категория вопроса */}
+                  <div className="text-center mb-4">
+                    <span className="px-3 py-1 rounded-full text-sm font-medium" style={{ background: '#303038', color: '#fff' }}>
+                      {currentQuestion.category}
+                    </span>
+                  </div>
+
+                  {/* Изображение трассы (если есть) */}
+                  {currentQuestion.image && (
+                    <div className="bg-white p-4 rounded-lg mb-6">
+                      <div className="relative">
+                        {imageLoading && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg z-10">
+                            <div className="text-gray-500">Загрузка изображения...</div>
+                          </div>
+                        )}
+                        {imageError ? (
+                          <div className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
+                            <div className="text-center">
+                              <p className="text-gray-500 mb-2">Изображение недоступно</p>
+                              <button 
+                                onClick={() => {
+                                  setImageError(false);
+                                  setImageLoading(true);
+                                }}
+                                className="mt-2 px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+                              >
+                                Попробовать снова
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <img 
+                            src={currentQuestion.image} 
+                            alt="Трасса F1"
+                            className="w-full h-48 object-contain rounded-lg"
+                            onError={() => {
+                              setImageError(true);
+                              setImageLoading(false);
+                            }}
+                            onLoad={() => {
+                              setImageError(false);
+                              setImageLoading(false);
+                            }}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Вопрос */}
+                  <h2 className="text-xl font-bold text-white mb-6 text-center">
+                    {currentQuestion.question}
+                  </h2>
+
+                  {/* Варианты ответов */}
+                  <div className="space-y-3">
+                    {currentQuestion.options.map((option, index) => {
+                      let buttonClass = "w-full p-4 text-left rounded-lg border-2 transition-all duration-200 text-white ";
+                      
+                      if (!showResult) {
+                        buttonClass += "border-gray-600 hover:border-blue-400 hover:bg-gray-700 cursor-pointer";
+                      } else {
+                        if (option === currentQuestion.correct) {
+                          buttonClass += "border-green-500 bg-green-700 text-white";
+                        } else if (option === selectedAnswer && option !== currentQuestion.correct) {
+                          buttonClass += "border-red-500 bg-red-700 text-white";
+                        } else {
+                          buttonClass += "border-gray-700 bg-gray-800 text-white";
+                        }
+                      }
+
+                      let content;
+                      if (currentQuestion.type === 'driver_team') {
+                        // Найти имя пилота из вопроса
+                        const driverName = currentQuestion.question.match(/does (.+) race for\?/)[1];
+                        content = (
+                          <span className="inline-flex items-center gap-2 font-semibold">
+                            <DriverAvatar name={driverName} />
+                            {renderTeamWithLogo(String.fromCharCode(65 + index) + '.', option)}
+                          </span>
+                        );
+                      } else if (currentQuestion.type === 'driver_number') {
+                        // Найти имя пилота из вопроса
+                        const driverName = currentQuestion.question.match(/number of (.+)\?/)[1];
+                        content = (
+                          <span className="inline-flex items-center gap-2 font-semibold">
+                            <DriverAvatar name={driverName} />
+                            <span>{String.fromCharCode(65 + index)}. {option}</span>
+                          </span>
+                        );
+                      } else {
+                        content = (
+                          <div className="font-semibold text-white">
+                            {String.fromCharCode(65 + index)}. {option}
+                          </div>
+                        );
+                      }
+                      return (
+                        <button
+                          key={index}
+                          onClick={() => !showResult && handleAnswer(option)}
+                          className={buttonClass}
+                          disabled={showResult}
+                        >
+                          {content}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Результат */}
+                  {showResult && (
+                    <div className="mt-6 p-4 rounded-lg text-white" style={{ background: '#303038' }}>
+                      <div className="text-center">
+                        <p className={`text-lg font-semibold mb-2 ${selectedAnswer === currentQuestion.correct ? 'text-green-400' : 'text-red-400'}`}>
+                          {selectedAnswer === currentQuestion.correct ? '🎉 Correct!' : '❌ Wrong!'}
+                        </p>
+                        {selectedAnswer !== currentQuestion.correct && (
+                          <p className="text-white mb-3">
+                            Correct answer: <strong>
+                              {currentQuestion.type === 'driver_team'
+                                ? (
+                                    <span className="inline-flex items-center gap-2 font-semibold">
+                                      <DriverAvatar name={currentQuestion.question.match(/does (.+) race for\?/)[1]} />
+                                      {renderTeamWithLogo('', currentQuestion.correct)}
+                                    </span>
+                                  )
+                                : currentQuestion.type === 'driver_number'
+                                  ? (
+                                      <span className="inline-flex items-center gap-2 font-semibold">
+                                        <DriverAvatar name={currentQuestion.question.match(/number of (.+)\?/)[1]} />
+                                        {currentQuestion.correct}
+                                      </span>
+                                    )
+                                  : currentQuestion.correct}
+                            </strong>
+                          </p>
+                        )}
+                        {questionIndex < maxQuestions ? (
+                          <button 
+                            onClick={handleNextQuestion}
+                            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                          >
+                            Next question
+                          </button>
+                        ) : (
+                          <button 
+                            onClick={handleNextQuestion}
+                            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                          >
+                            Finish quiz
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Подвал */}
+                <div className="text-center text-gray-400 text-sm">
+                  <div className="text-sm text-gray-400">
+                    <div className="flex flex-wrap gap-2">
+                      {questionTypes.map((type, index) => (
+                        <span key={index} className="px-2 py-1" style={{ background: '#303038', color: '#fff' }}>
+                          {type.titleEn}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <p>Ultimate Formula 1 Quiz 2025</p>
+                  <p className="mt-1">
+                    🏁 {f1Data.tracks.length} tracks • 👨‍💼 {f1Data.drivers.length} drivers • 🔢 Numbers • 🔄 Laps
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        };
+
+        // Запуск приложения
+        ReactDOM.render(<F1Quiz />, document.getElementById('root'));
+    </script>
+</body>
+</html>
