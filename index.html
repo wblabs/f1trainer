@@ -486,20 +486,10 @@
                 {/* Основная карточка квиза */}
                 <div className="rounded-lg shadow-lg p-6 mb-6 text-white" style={{ background: '#15161E' }}>
                   {/* Баннер пилота и команды */}
-                  {(currentQuestion.type === 'driver_team' || currentQuestion.type === 'driver_number') && (() => {
-                    // Имя пилота
-                    let driverName = '';
-                    let teamName = '';
-                    if (currentQuestion.type === 'driver_team') {
-                      driverName = currentQuestion.question.match(/does (.+) race for\?/)[1];
-                      // Найти команду по имени пилота
-                      const driver = f1Data.drivers.find(d => d.name === driverName);
-                      teamName = driver ? getTeamName(driver.team) : '';
-                    } else if (currentQuestion.type === 'driver_number') {
-                      driverName = currentQuestion.question.match(/number of (.+)\?/)[1];
-                      const driver = f1Data.drivers.find(d => d.name === driverName);
-                      teamName = driver ? getTeamName(driver.team) : '';
-                    }
+                  {currentQuestion.type === 'driver_number' && (() => {
+                    let driverName = currentQuestion.question.match(/number of (.+)\?/)[1];
+                    const driver = f1Data.drivers.find(d => d.name === driverName);
+                    let teamName = driver ? getTeamName(driver.team) : '';
                     return <TeamDriverBanner driverName={driverName} teamName={teamName} />;
                   })()}
 
@@ -601,9 +591,7 @@
                   {showResult && (
                     <div className="mt-6 p-4 rounded-lg text-white" style={{ background: '#303038' }}>
                       <div className="text-center">
-                        <p className={`text-lg font-semibold mb-2 ${selectedAnswer === currentQuestion.correct ? 'text-green-400' : 'text-red-400'}`}>
-                          {selectedAnswer === currentQuestion.correct ? '🎉 Correct!' : '❌ Wrong!'}
-                        </p>
+                        <p className={`text-lg font-semibold mb-2 ${selectedAnswer === currentQuestion.correct ? 'text-green-400' : 'text-red-400'}`}>{selectedAnswer === currentQuestion.correct ? '🎉 Correct!' : '❌ Wrong!'}</p>
                         {selectedAnswer !== currentQuestion.correct && (
                           <p className="text-white mb-3">
                             Correct answer: <strong>
@@ -641,30 +629,29 @@
                       </div>
                     </div>
                   )}
-                </div>
 
-                {/* Подвал */}
-                <div className="text-center text-gray-400 text-sm">
-                  <div className="text-sm text-gray-400">
-                    <div className="flex flex-wrap gap-2">
-                      {questionTypes.map((type, index) => (
-                        <span key={index} className="px-2 py-1" style={{ background: '#303038', color: '#fff' }}>
-                          {type.titleEn}
-                        </span>
-                      ))}
+                  {/* Footer */}
+                  <div className="text-center text-gray-400 text-sm mt-6">
+                    <div className="text-sm text-gray-400">
+                      <div className="flex flex-wrap gap-2">
+                        {questionTypes.map((type, index) => (
+                          <span key={index} className="px-2 py-1" style={{ background: '#303038', color: '#fff' }}>
+                            {type.titleEn}
+                          </span>
+                        ))}
+                      </div>
                     </div>
+                    <p>Ultimate Formula 1 Quiz 2025</p>
+                    <p className="mt-1">
+                      🏁 {f1Data.tracks.length} tracks • 👨‍💼 {f1Data.drivers.length} drivers • 🔢 Numbers • 🔄 Laps
+                    </p>
                   </div>
-                  <p>Ultimate Formula 1 Quiz 2025</p>
-                  <p className="mt-1">
-                    🏁 {f1Data.tracks.length} tracks • 👨‍💼 {f1Data.drivers.length} drivers • 🔢 Numbers • 🔄 Laps
-                  </p>
                 </div>
               </div>
             </div>
           );
         };
 
-        // Запуск приложения
         ReactDOM.render(<F1Quiz />, document.getElementById('root'));
     </script>
 </body>
