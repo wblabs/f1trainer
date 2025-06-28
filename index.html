@@ -441,21 +441,22 @@
                 </div>
 
                 {/* Счет и категории */}
-                <div className="rounded-lg shadow-md p-4 mb-2 text-white" style={{ background: '#15161E' }}>
+                <div className="rounded-lg shadow-md px-4 py-2 mb-2 text-white" style={{ background: '#15161E' }}>
                   <div className="flex justify-between items-center">
                     <div className="text-lg font-semibold text-white">
                       Score: <span className={getScoreColor()}>{score}/{maxQuestions}</span>
                     </div>
                   </div>
                   {/* Прогресс-бар по вопросам */}
-                  <div className="w-full mt-3">
+                  <div className="w-full">
+                    <div className="text-xs text-gray-400 text-right mt-1">{Math.min(questionIndex, maxQuestions)}/{maxQuestions}</div>
+
                     <div className="h-2" style={{ background: '#303038', borderRadius: '9999px', overflow: 'hidden' }}>
                       <div
                         className="h-2 transition-all duration-300"
                         style={{ width: `${Math.min((questionIndex - 1) / maxQuestions * 100, 100)}%`, background: '#3770C3', borderRadius: '9999px' }}
                       ></div>
                     </div>
-                    <div className="text-xs text-gray-400 text-right mt-1">{Math.min(questionIndex, maxQuestions)}/{maxQuestions}</div>
                   </div>
                 </div>
 
