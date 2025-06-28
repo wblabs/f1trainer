@@ -1,3 +1,5 @@
+> **Live Demo:** [https://wblabs.com/f1/](https://wblabs.com/f1/)
+
 # F1 Fan Trainer
 
 Ultimate Formula 1 Quiz 2025
