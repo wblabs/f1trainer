@@ -590,6 +590,33 @@
                         );
                       })}
                     </div>
+                  ) : currentQuestion.type === 'track_laps' ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                      {currentQuestion.options.map((option, index) => {
+                        let buttonClass = "aspect-square w-full flex items-center justify-center rounded-lg border-2 transition-all duration-200 overflow-hidden ";
+                        if (!showResult) {
+                          buttonClass += "border-gray-600 hover:border-blue-400 hover:bg-gray-700 cursor-pointer";
+                        } else {
+                          if (option === currentQuestion.correct) {
+                            buttonClass += "border-green-500 bg-green-700";
+                          } else if (option === selectedAnswer && option !== currentQuestion.correct) {
+                            buttonClass += "border-red-500 bg-red-700";
+                          } else {
+                            buttonClass += "border-gray-700 bg-gray-800";
+                          }
+                        }
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => !showResult && handleAnswer(option)}
+                            className={buttonClass}
+                            disabled={showResult}
+                          >
+                            <span className="text-4xl font-extrabold text-white select-none">{option}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   ) : (
                     <div className="space-y-3">
                       {currentQuestion.options.map((option, index) => {
