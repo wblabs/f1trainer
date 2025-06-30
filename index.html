@@ -558,50 +558,76 @@
                   </h2>
 
                   {/* Варианты ответов */}
-                  <div className="space-y-3">
-                    {currentQuestion.options.map((option, index) => {
-                      let buttonClass = "w-full p-2 text-base text-left rounded-lg border-2 transition-all duration-200 text-white ";
-                      
-                      if (!showResult) {
-                        buttonClass += "border-gray-600 hover:border-blue-400 hover:bg-gray-700 cursor-pointer";
-                      } else {
-                        if (option === currentQuestion.correct) {
-                          buttonClass += "border-green-500 bg-green-700 text-white";
-                        } else if (option === selectedAnswer && option !== currentQuestion.correct) {
-                          buttonClass += "border-red-500 bg-red-700 text-white";
+                  {currentQuestion.type === 'driver_number' ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                      {currentQuestion.options.map((option, index) => {
+                        let buttonClass = "aspect-square w-full flex items-center justify-center rounded-lg border-2 transition-all duration-200 overflow-hidden ";
+                        if (!showResult) {
+                          buttonClass += "border-gray-600 hover:border-blue-400 hover:bg-gray-700 cursor-pointer";
                         } else {
-                          buttonClass += "border-gray-700 bg-gray-800 text-white";
+                          if (option === currentQuestion.correct) {
+                            buttonClass += "border-green-500 bg-green-700";
+                          } else if (option === selectedAnswer && option !== currentQuestion.correct) {
+                            buttonClass += "border-red-500 bg-red-700";
+                          } else {
+                            buttonClass += "border-gray-700 bg-gray-800";
+                          }
                         }
-                      }
-
-                      let content;
-                      if (currentQuestion.type === 'driver_team') {
-                        content = renderTeamWithLogo('', option);
-                      } else if (currentQuestion.type === 'driver_number') {
-                        content = (
-                          <span className="inline-flex items-center gap-2 font-semibold">
-                            <span>{option}</span>
-                          </span>
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => !showResult && handleAnswer(option)}
+                            className={buttonClass}
+                            disabled={showResult}
+                          >
+                            <img
+                              src={`https://wblabs.com/f1/numbers/2025/${option}.avif`}
+                              alt={`Номер ${option}`}
+                              className="w-3/4 h-3/4 object-contain"
+                              loading="lazy"
+                            />
+                          </button>
                         );
-                      } else {
-                        content = (
-                          <div className="font-semibold text-white">
-                            {option}
-                          </div>
+                      })}
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {currentQuestion.options.map((option, index) => {
+                        let buttonClass = "w-full p-2 text-base text-left rounded-lg border-2 transition-all duration-200 text-white ";
+                        if (!showResult) {
+                          buttonClass += "border-gray-600 hover:border-blue-400 hover:bg-gray-700 cursor-pointer";
+                        } else {
+                          if (option === currentQuestion.correct) {
+                            buttonClass += "border-green-500 bg-green-700 text-white";
+                          } else if (option === selectedAnswer && option !== currentQuestion.correct) {
+                            buttonClass += "border-red-500 bg-red-700 text-white";
+                          } else {
+                            buttonClass += "border-gray-700 bg-gray-800 text-white";
+                          }
+                        }
+                        let content;
+                        if (currentQuestion.type === 'driver_team') {
+                          content = renderTeamWithLogo('', option);
+                        } else {
+                          content = (
+                            <div className="font-semibold text-white">
+                              {option}
+                            </div>
+                          );
+                        }
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => !showResult && handleAnswer(option)}
+                            className={buttonClass}
+                            disabled={showResult}
+                          >
+                            {content}
+                          </button>
                         );
-                      }
-                      return (
-                        <button
-                          key={index}
-                          onClick={() => !showResult && handleAnswer(option)}
-                          className={buttonClass}
-                          disabled={showResult}
-                        >
-                          {content}
-                        </button>
-                      );
-                    })}
-                  </div>
+                      })}
+                    </div>
+                  )}
 
                   {/* Результат */}
                   {showResult && (
