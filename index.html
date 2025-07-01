@@ -131,105 +131,75 @@
             ]
           };
 
-          // Данные по командам, шасси, PU, фото, градиент
+          // Данные по командам, шасси, PU, фото, градиент (только на английском)
           const teamCarData = [
             {
               team: 'Scuderia Ferrari',
-              teamEn: 'Scuderia Ferrari',
-              chassis: 'SF‑25',
-              chassisEn: 'SF-25',
+              chassis: 'SF-25',
               pu: 'Ferrari 066/15 PU',
-              puEn: 'Ferrari 066/15 PU',
               carImg: carImages.ferrari,
               gradient: 'linear-gradient(135deg, #710A06 0%, #D01E27 100%)',
             },
             {
               team: 'McLaren F1 Team',
-              teamEn: 'McLaren F1 Team',
               chassis: 'MCL39',
-              chassisEn: 'MCL39',
-              pu: 'Mercedes‑AMG F1 M16 E Performance',
-              puEn: 'Mercedes-AMG F1 M16 E Performance',
+              pu: 'Mercedes-AMG F1 M16 E Performance',
               carImg: carImages.mclaren,
               gradient: 'linear-gradient(135deg, #863402 0%, #DB6601 100%)',
             },
             {
               team: 'Red Bull Racing',
-              teamEn: 'Red Bull Racing',
               chassis: 'RB21',
-              chassisEn: 'RB21',
               pu: 'Honda RBPTH003 (Honda RBPT)',
-              puEn: 'Honda RBPTH003 (Honda RBPT)',
               carImg: carImages.redbullracing,
               gradient: 'linear-gradient(135deg, #013382 0%, #3770C3 100%)',
             },
             {
-              team: 'Mercedes‑AMG Petronas',
-              teamEn: 'Mercedes-AMG Petronas',
+              team: 'Mercedes-AMG Petronas',
               chassis: 'W16',
-              chassisEn: 'W16',
-              pu: 'Mercedes‑AMG F1 M16 E Performance',
-              puEn: 'Mercedes-AMG F1 M16 E Performance',
+              pu: 'Mercedes-AMG F1 M16 E Performance',
               carImg: carImages.mercedes,
               gradient: 'linear-gradient(135deg, #017560 0%, #00C0A2 100%)',
             },
             {
               team: 'Aston Martin Aramco F1 Team',
-              teamEn: 'Aston Martin Aramco F1 Team',
               chassis: 'AMR25',
-              chassisEn: 'AMR25',
-              pu: 'Mercedes‑AMG F1 M16 E Performance',
-              puEn: 'Mercedes-AMG F1 M16 E Performance',
+              pu: 'Mercedes-AMG F1 M16 E Performance',
               carImg: carImages.astonmartin,
               gradient: 'linear-gradient(135deg, #00482C 0%, #1A8762 100%)',
             },
             {
               team: 'Alpine F1 Team',
-              teamEn: 'Alpine F1 Team',
               chassis: 'A525',
-              chassisEn: 'A525',
-              pu: 'Renault E‑Tech RE25 (Mecachrome)',
-              puEn: 'Renault E-Tech RE25 (Mecachrome)',
+              pu: 'Renault E-Tech RE25 (Mecachrome)',
               carImg: carImages.alpine,
               gradient: 'linear-gradient(135deg, #005081 0%, #018DCE 100%)',
             },
             {
               team: 'Haas F1 Team',
-              teamEn: 'Haas F1 Team',
-              chassis: 'VF‑25 (ожидается)',
-              chassisEn: 'VF-25 (expected)',
+              chassis: 'VF-25',
               pu: 'Ferrari 066/15 PU',
-              puEn: 'Ferrari 066/15 PU',
               carImg: carImages.haas,
               gradient: 'linear-gradient(135deg, #4D5052 0%, #898D90 100%)',
             },
             {
               team: 'Racing Bulls F1 Team',
-              teamEn: 'Racing Bulls F1 Team',
-              chassis: 'VCARB‑02',
-              chassisEn: 'VCARB-02',
+              chassis: 'VCARB-02',
               pu: 'Honda RBPTH003 (Honda RBPT)',
-              puEn: 'Honda RBPTH003 (Honda RBPT)',
               carImg: carImages.racingbulls,
               gradient: 'linear-gradient(135deg, #2445AB 0%, #5C84EB 100%)',
             },
             {
               team: 'Williams Racing',
-              teamEn: 'Williams Racing',
               chassis: 'FW47',
-              chassisEn: 'FW47',
-              pu: 'Mercedes‑AMG F1 M16 E Performance',
-              puEn: 'Mercedes-AMG F1 M16 E Performance',
+              pu: 'Mercedes-AMG F1 M16 E Performance',
               carImg: carImages.williams,
               gradient: 'linear-gradient(135deg, #011481 0%, #1154C6 100%)',
             },
             {
               team: 'Kick Sauber F1 Team',
-              teamEn: 'Kick Sauber F1 Team',
               chassis: 'C45',
-              chassisEn: 'C45',
               pu: 'Ferrari 066/15 PU',
-              puEn: 'Ferrari 066/15 PU',
               carImg: carImages.kicksauber,
               gradient: 'linear-gradient(135deg, #006301 0%, #00AC09 100%)',
             },
@@ -330,8 +300,8 @@
                   question: `What is the chassis name of this car?`,
                   image: car.carImg,
                   gradient: car.gradient,
-                  correct: car.chassisEn,
-                  options: shuffleArray([car.chassisEn, ...other.map(t => t.chassisEn)]),
+                  correct: car.chassis,
+                  options: shuffleArray([car.chassis, ...other.map(t => t.chassis)]),
                   category: '🚗 Chassis',
                 };
               }
@@ -343,8 +313,8 @@
                   question: `Which power unit does this car use?`,
                   image: car.carImg,
                   gradient: car.gradient,
-                  correct: car.puEn,
-                  options: shuffleArray([car.puEn, ...other.map(t => t.puEn)]),
+                  correct: car.pu,
+                  options: shuffleArray([car.pu, ...other.map(t => t.pu)]),
                   category: '⚡ PU',
                 };
               }
@@ -541,8 +511,8 @@
           const getTeamNameEn = (teamStr) => {
             // Удаляет emoji и пробелы, возвращает английское название
             const name = teamStr.replace(/^[^a-zA-Z0-9]+\s*/, '').trim();
-            const found = teamCarData.find(t => t.team === name || t.teamEn === name);
-            return found ? found.teamEn : name;
+            const found = teamCarData.find(t => t.team === name);
+            return found ? found.team : name;
           };
 
           // Фото пилотов
