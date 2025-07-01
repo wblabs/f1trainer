@@ -62,6 +62,20 @@
             'Las Vegas Strip Circuit': 'https://wblabs.com/f1/f1tracks/2025/United-States-Las-Vegas-Las-Vegas.png'
           };
 
+          // Изображения машин команд 2025
+          const carImages = {
+            'alpine': 'https://wblabs.com/f1/cars/2025/alpine.avif',
+            'astonmartin': 'https://wblabs.com/f1/cars/2025/astonmartin.avif',
+            'ferrari': 'https://wblabs.com/f1/cars/2025/ferrari.avif',
+            'haas': 'https://wblabs.com/f1/cars/2025/haas.avif',
+            'kicksauber': 'https://wblabs.com/f1/cars/2025/kicksauber.avif',
+            'mclaren': 'https://wblabs.com/f1/cars/2025/mclaren.avif',
+            'mercedes': 'https://wblabs.com/f1/cars/2025/mercedes.avif',
+            'racingbulls': 'https://wblabs.com/f1/cars/2025/racingbulls.avif',
+            'redbullracing': 'https://wblabs.com/f1/cars/2025/redbullracing.avif',
+            'williams': 'https://wblabs.com/f1/cars/2025/williams.avif',
+          };
+
           // Полная база данных F1 2025
           const f1Data = {
             // Трассы с количеством кругов
@@ -117,12 +131,118 @@
             ]
           };
 
+          // Данные по командам, шасси, PU, фото, градиент
+          const teamCarData = [
+            {
+              team: 'Scuderia Ferrari',
+              teamEn: 'Scuderia Ferrari',
+              chassis: 'SF‑25',
+              chassisEn: 'SF-25',
+              pu: 'Ferrari 066/15 PU',
+              puEn: 'Ferrari 066/15 PU',
+              carImg: carImages.ferrari,
+              gradient: 'linear-gradient(135deg, #710A06 0%, #D01E27 100%)',
+            },
+            {
+              team: 'McLaren F1 Team',
+              teamEn: 'McLaren F1 Team',
+              chassis: 'MCL39',
+              chassisEn: 'MCL39',
+              pu: 'Mercedes‑AMG F1 M16 E Performance',
+              puEn: 'Mercedes-AMG F1 M16 E Performance',
+              carImg: carImages.mclaren,
+              gradient: 'linear-gradient(135deg, #863402 0%, #DB6601 100%)',
+            },
+            {
+              team: 'Red Bull Racing',
+              teamEn: 'Red Bull Racing',
+              chassis: 'RB21',
+              chassisEn: 'RB21',
+              pu: 'Honda RBPTH003 (Honda RBPT)',
+              puEn: 'Honda RBPTH003 (Honda RBPT)',
+              carImg: carImages.redbullracing,
+              gradient: 'linear-gradient(135deg, #013382 0%, #3770C3 100%)',
+            },
+            {
+              team: 'Mercedes‑AMG Petronas',
+              teamEn: 'Mercedes-AMG Petronas',
+              chassis: 'W16',
+              chassisEn: 'W16',
+              pu: 'Mercedes‑AMG F1 M16 E Performance',
+              puEn: 'Mercedes-AMG F1 M16 E Performance',
+              carImg: carImages.mercedes,
+              gradient: 'linear-gradient(135deg, #017560 0%, #00C0A2 100%)',
+            },
+            {
+              team: 'Aston Martin Aramco F1 Team',
+              teamEn: 'Aston Martin Aramco F1 Team',
+              chassis: 'AMR25',
+              chassisEn: 'AMR25',
+              pu: 'Mercedes‑AMG F1 M16 E Performance',
+              puEn: 'Mercedes-AMG F1 M16 E Performance',
+              carImg: carImages.astonmartin,
+              gradient: 'linear-gradient(135deg, #00482C 0%, #1A8762 100%)',
+            },
+            {
+              team: 'Alpine F1 Team',
+              teamEn: 'Alpine F1 Team',
+              chassis: 'A525',
+              chassisEn: 'A525',
+              pu: 'Renault E‑Tech RE25 (Mecachrome)',
+              puEn: 'Renault E-Tech RE25 (Mecachrome)',
+              carImg: carImages.alpine,
+              gradient: 'linear-gradient(135deg, #005081 0%, #018DCE 100%)',
+            },
+            {
+              team: 'Haas F1 Team',
+              teamEn: 'Haas F1 Team',
+              chassis: 'VF‑25 (ожидается)',
+              chassisEn: 'VF-25 (expected)',
+              pu: 'Ferrari 066/15 PU',
+              puEn: 'Ferrari 066/15 PU',
+              carImg: carImages.haas,
+              gradient: 'linear-gradient(135deg, #4D5052 0%, #898D90 100%)',
+            },
+            {
+              team: 'Racing Bulls F1 Team',
+              teamEn: 'Racing Bulls F1 Team',
+              chassis: 'VCARB‑02',
+              chassisEn: 'VCARB-02',
+              pu: 'Honda RBPTH003 (Honda RBPT)',
+              puEn: 'Honda RBPTH003 (Honda RBPT)',
+              carImg: carImages.racingbulls,
+              gradient: 'linear-gradient(135deg, #2445AB 0%, #5C84EB 100%)',
+            },
+            {
+              team: 'Williams Racing',
+              teamEn: 'Williams Racing',
+              chassis: 'FW47',
+              chassisEn: 'FW47',
+              pu: 'Mercedes‑AMG F1 M16 E Performance',
+              puEn: 'Mercedes-AMG F1 M16 E Performance',
+              carImg: carImages.williams,
+              gradient: 'linear-gradient(135deg, #011481 0%, #1154C6 100%)',
+            },
+            {
+              team: 'Kick Sauber F1 Team',
+              teamEn: 'Kick Sauber F1 Team',
+              chassis: 'C45',
+              chassisEn: 'C45',
+              pu: 'Ferrari 066/15 PU',
+              puEn: 'Ferrari 066/15 PU',
+              carImg: carImages.kicksauber,
+              gradient: 'linear-gradient(135deg, #006301 0%, #00AC09 100%)',
+            },
+          ];
+
           // Типы вопросов
           const questionTypes = [
             { type: 'track_image', title: '🏁 Какая это трасса?', titleEn: '🏁 Which track is this?', weight: 3 },
             { type: 'driver_team', title: '👨‍💼 За какую команду выступает пилот?', titleEn: '👨‍💼 Which team does this driver race for?', weight: 2 },
             { type: 'driver_number', title: '🔢 Какой номер у пилота?', titleEn: '🔢 What is the driver\'s number?', weight: 2 },
-            { type: 'track_laps', title: '🔄 Сколько кругов на трассе?', titleEn: '🔄 How many laps on this track?', weight: 2 }
+            { type: 'track_laps', title: '🔄 Сколько кругов на трассе?', titleEn: '🔄 How many laps on this track?', weight: 2 },
+            { type: 'car_chassis', title: '🚗 Название шасси', titleEn: '🚗 Car Chassis Name', weight: 2 },
+            { type: 'car_pu', title: '⚡ Какая силовая установка?', titleEn: '⚡ Which Power Unit?', weight: 2 },
           ];
 
           // Перемешивание массива
@@ -202,6 +322,33 @@
                   category: '🔄 Laps'
                 };
 
+              case 'car_chassis': {
+                const car = teamCarData[Math.floor(Math.random() * teamCarData.length)];
+                const other = teamCarData.filter(t => t.chassis !== car.chassis).sort(() => 0.5 - Math.random()).slice(0, 3);
+                return {
+                  type: 'car_chassis',
+                  question: `Какое название шасси у этой машины?`,
+                  image: car.carImg,
+                  gradient: car.gradient,
+                  correct: car.chassis,
+                  options: shuffleArray([car.chassis, ...other.map(t => t.chassis)]),
+                  category: '🚗 Chassis',
+                };
+              }
+              case 'car_pu': {
+                const car = teamCarData[Math.floor(Math.random() * teamCarData.length)];
+                const other = teamCarData.filter(t => t.pu !== car.pu).sort(() => 0.5 - Math.random()).slice(0, 3);
+                return {
+                  type: 'car_pu',
+                  question: `Какая силовая установка у этой машины?`,
+                  image: car.carImg,
+                  gradient: car.gradient,
+                  correct: car.pu,
+                  options: shuffleArray([car.pu, ...other.map(t => t.pu)]),
+                  category: '⚡ PU',
+                };
+              }
+
               default:
                 return generateQuestionByType('track_image');
             }
@@ -229,6 +376,10 @@
                 return `driver_number:${q.question}`;
               case 'track_laps':
                 return `track_laps:${q.question}`;
+              case 'car_chassis':
+                return `car_chassis:${q.correct}`;
+              case 'car_pu':
+                return `car_pu:${q.correct}`;
               default:
                 return JSON.stringify(q);
             }
@@ -318,6 +469,11 @@
             numberList.forEach(num => {
               const img = new window.Image();
               img.src = `https://wblabs.com/f1/numbers/2025/${num}.avif`;
+            });
+            // Preload all car images
+            Object.values(carImages).forEach(src => {
+              const img = new window.Image();
+              img.src = src;
             });
           }, []);
           useEffect(() => {
@@ -515,46 +671,10 @@
                     return <TeamDriverBanner driverName={driverName} teamName={teamName} />;
                   })()}
 
-                  {/* Изображение трассы (если есть) */}
-                  {currentQuestion.image && (
-                    <div className="bg-white p-4 rounded-lg mb-6">
-                      <div className="relative">
-                        {imageLoading && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg z-10">
-                            <div className="text-gray-500">Loading image...</div>
-                          </div>
-                        )}
-                        {imageError ? (
-                          <div className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                            <div className="text-center">
-                              <p className="text-gray-500 mb-2">Image not available</p>
-                              <button 
-                                onClick={() => {
-                                  setImageError(false);
-                                  setImageLoading(true);
-                                }}
-                                className="mt-2 px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
-                              >
-                                Try again
-                              </button>
-                            </div>
-                          </div>
-                        ) : (
-                          <img 
-                            src={currentQuestion.image} 
-                            alt="Трасса F1"
-                            className="w-full h-48 object-contain rounded-lg"
-                            onError={() => {
-                              setImageError(true);
-                              setImageLoading(false);
-                            }}
-                            onLoad={() => {
-                              setImageError(false);
-                              setImageLoading(false);
-                            }}
-                          />
-                        )}
-                      </div>
+                  {/* Баннер для car_chassis и car_pu */}
+                  {['car_chassis','car_pu'].includes(currentQuestion.type) && (
+                    <div className="w-full rounded-lg mb-4 overflow-hidden flex justify-center items-center" style={{height:'160px',background:currentQuestion.gradient,paddingLeft:'4rem',paddingRight:'4rem'}}>
+                      <img src={currentQuestion.image} alt="Car" className="object-contain" style={{height:'140px',maxWidth:'100%'}} />
                     </div>
                   )}
 
@@ -619,6 +739,33 @@
                             disabled={showResult}
                           >
                             <span className="text-4xl font-extrabold text-white select-none">{option}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : ['car_chassis','car_pu'].includes(currentQuestion.type) ? (
+                    <div className="space-y-3">
+                      {currentQuestion.options.map((option, index) => {
+                        let buttonClass = "w-full p-4 text-lg font-extrabold text-center rounded-lg border-2 transition-all duration-200 text-white ";
+                        if (!showResult) {
+                          buttonClass += "border-gray-600 hover:border-blue-400 hover:bg-gray-700 cursor-pointer";
+                        } else {
+                          if (option === currentQuestion.correct) {
+                            buttonClass += "border-green-500 bg-green-700";
+                          } else if (option === selectedAnswer && option !== currentQuestion.correct) {
+                            buttonClass += "border-red-500 bg-red-700";
+                          } else {
+                            buttonClass += "border-gray-700 bg-gray-800";
+                          }
+                        }
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => !showResult && handleAnswer(option)}
+                            className={buttonClass}
+                            disabled={showResult}
+                          >
+                            <span className="break-words select-none">{option}</span>
                           </button>
                         );
                       })}
