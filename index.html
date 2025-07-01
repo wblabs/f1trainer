@@ -258,7 +258,7 @@
           // Генерация вопроса по типу
           const generateQuestionByType = (type) => {
             switch (type) {
-              case 'track_image':
+              case 'track_image': {
                 const track = f1Data.tracks[Math.floor(Math.random() * f1Data.tracks.length)];
                 const otherTracks = f1Data.tracks
                   .filter(t => t.name !== track.name)
@@ -266,7 +266,7 @@
                   .slice(0, 3);
                 return {
                   type: 'track_image',
-                  question: 'Which track is this?',
+                  question: `Which track is this?`,
                   image: trackImages[track.name],
                   correct: `${track.name} (${track.country})`,
                   options: shuffleArray([
@@ -275,8 +275,8 @@
                   ]),
                   category: '🏁 Tracks'
                 };
-
-              case 'driver_team':
+              }
+              case 'driver_team': {
                 const driver = f1Data.drivers[Math.floor(Math.random() * f1Data.drivers.length)];
                 const otherTeams = f1Data.drivers
                   .filter(d => d.team !== driver.team)
@@ -285,15 +285,15 @@
                 return {
                   type: 'driver_team',
                   question: `Which team does ${driver.name} race for?`,
-                  correct: getTeamName(driver.team),
+                  correct: getTeamNameEn(driver.team),
                   options: shuffleArray([
-                    getTeamName(driver.team),
-                    ...otherTeams.map(d => getTeamName(d.team))
+                    getTeamNameEn(driver.team),
+                    ...otherTeams.map(d => getTeamNameEn(d.team))
                   ]),
                   category: '👨‍💼 Drivers'
                 };
-
-              case 'driver_number':
+              }
+              case 'driver_number': {
                 const numDriver = f1Data.drivers[Math.floor(Math.random() * f1Data.drivers.length)];
                 const otherNumbers = f1Data.drivers
                   .filter(d => d.number !== numDriver.number)
@@ -306,8 +306,8 @@
                   options: shuffleArray([numDriver.number.toString(), ...otherNumbers.map(d => d.number.toString())]),
                   category: '🔢 Numbers'
                 };
-
-              case 'track_laps':
+              }
+              case 'track_laps': {
                 const lapTrack = f1Data.tracks[Math.floor(Math.random() * f1Data.tracks.length)];
                 const otherLaps = f1Data.tracks
                   .filter(t => t.laps !== lapTrack.laps)
@@ -321,17 +321,17 @@
                   options: shuffleArray([lapTrack.laps.toString(), ...otherLaps.map(t => t.laps.toString())]),
                   category: '🔄 Laps'
                 };
-
+              }
               case 'car_chassis': {
                 const car = teamCarData[Math.floor(Math.random() * teamCarData.length)];
                 const other = teamCarData.filter(t => t.chassis !== car.chassis).sort(() => 0.5 - Math.random()).slice(0, 3);
                 return {
                   type: 'car_chassis',
-                  question: `Какое название шасси у этой машины?`,
+                  question: `What is the chassis name of this car?`,
                   image: car.carImg,
                   gradient: car.gradient,
-                  correct: car.chassis,
-                  options: shuffleArray([car.chassis, ...other.map(t => t.chassis)]),
+                  correct: car.chassisEn,
+                  options: shuffleArray([car.chassisEn, ...other.map(t => t.chassisEn)]),
                   category: '🚗 Chassis',
                 };
               }
@@ -340,15 +340,14 @@
                 const other = teamCarData.filter(t => t.pu !== car.pu).sort(() => 0.5 - Math.random()).slice(0, 3);
                 return {
                   type: 'car_pu',
-                  question: `Какая силовая установка у этой машины?`,
+                  question: `Which power unit does this car use?`,
                   image: car.carImg,
                   gradient: car.gradient,
-                  correct: car.pu,
-                  options: shuffleArray([car.pu, ...other.map(t => t.pu)]),
+                  correct: car.puEn,
+                  options: shuffleArray([car.puEn, ...other.map(t => t.puEn)]),
                   category: '⚡ PU',
                 };
               }
-
               default:
                 return generateQuestionByType('track_image');
             }
@@ -529,7 +528,7 @@
           }
 
           function renderTeamWithLogo(label, teamStr) {
-            const teamName = getTeamName(teamStr);
+            const teamName = getTeamNameEn(teamStr);
             return (
               <span className="inline-flex items-center gap-2 font-semibold">
                 <TeamLogoCircle teamName={teamName} />
@@ -538,10 +537,12 @@
             );
           }
 
-          // Функция для получения "чистого" названия команды без эмодзи
-          const getTeamName = (teamStr) => {
-            // Удаляет первый emoji и пробелы в начале
-            return teamStr.replace(/^[^a-zA-Z0-9]+\s*/, '').trim();
+          // Функция для получения "чистого" названия команды на английском
+          const getTeamNameEn = (teamStr) => {
+            // Удаляет emoji и пробелы, возвращает английское название
+            const name = teamStr.replace(/^[^a-zA-Z0-9]+\s*/, '').trim();
+            const found = teamCarData.find(t => t.team === name || t.teamEn === name);
+            return found ? found.teamEn : name;
           };
 
           // Фото пилотов
@@ -667,7 +668,7 @@
                   {currentQuestion.type === 'driver_number' && (() => {
                     let driverName = currentQuestion.question.match(/number of (.+)\?/)[1];
                     const driver = f1Data.drivers.find(d => d.name === driverName);
-                    let teamName = driver ? getTeamName(driver.team) : '';
+                    let teamName = driver ? getTeamNameEn(driver.team) : '';
                     return <TeamDriverBanner driverName={driverName} teamName={teamName} />;
                   })()}
 
@@ -675,6 +676,48 @@
                   {['car_chassis','car_pu'].includes(currentQuestion.type) && (
                     <div className="w-full rounded-lg mb-4 overflow-hidden flex justify-center items-center" style={{height:'160px',background:currentQuestion.gradient,paddingLeft:'4rem',paddingRight:'4rem'}}>
                       <img src={currentQuestion.image} alt="Car" className="object-contain" style={{height:'140px',maxWidth:'100%'}} />
+                    </div>
+                  )}
+                  {/* Изображение трассы для track_image и track_laps */}
+                  {(currentQuestion.type === 'track_image' || currentQuestion.type === 'track_laps') && currentQuestion.image && (
+                    <div className="bg-white p-4 rounded-lg mb-6">
+                      <div className="relative">
+                        {imageLoading && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg z-10">
+                            <div className="text-gray-500">Loading image...</div>
+                          </div>
+                        )}
+                        {imageError ? (
+                          <div className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
+                            <div className="text-center">
+                              <p className="text-gray-500 mb-2">Image not available</p>
+                              <button 
+                                onClick={() => {
+                                  setImageError(false);
+                                  setImageLoading(true);
+                                }}
+                                className="mt-2 px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+                              >
+                                Try again
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <img 
+                            src={currentQuestion.image} 
+                            alt="Трасса F1"
+                            className="w-full h-48 object-contain rounded-lg"
+                            onError={() => {
+                              setImageError(true);
+                              setImageLoading(false);
+                            }}
+                            onLoad={() => {
+                              setImageError(false);
+                              setImageLoading(false);
+                            }}
+                          />
+                        )}
+                      </div>
                     </div>
                   )}
 
